@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Send, Loader2 } from "lucide-react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+
 
 export default function ContactModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -68,17 +67,17 @@ export default function ContactModal() {
     setStatus("sending");
 
     try {
-      // Save message to Firebase Firestore 'messages' collection
-      await addDoc(collection(db, "messages"), {
-        name: formData.name,
-        email: formData.email,
-        message: formData.message,
-        createdAt: serverTimestamp(),
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
+
+      if (!res.ok) throw new Error("Failed to send");
 
       setStatus("success");
     } catch (err) {
-      console.error("Firestore error:", err);
+      console.error("Contact form error:", err);
       setStatus("error");
     }
   };
