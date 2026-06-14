@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Send, Loader2 } from "lucide-react";
-import emailjs from "@emailjs/browser";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export default function ContactModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,30 +68,17 @@ export default function ContactModal() {
     setStatus("sending");
 
     try {
-      // EmailJS – reads keys from Next.js public env vars
-      await emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          from_name: formData.name,
-          from_email: formData.email,
-          message: formData.message,
-          to_name: "Krish",
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
-
-      // Save submission to localStorage for local reference
-      const existing = JSON.parse(localStorage.getItem("portfolio_contacts") || "[]");
-      existing.push({
-        ...formData,
-        date: new Date().toISOString(),
+      // Save message to Firebase Firestore 'messages' collection
+      await addDoc(collection(db, "messages"), {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        createdAt: serverTimestamp(),
       });
-      localStorage.setItem("portfolio_contacts", JSON.stringify(existing));
 
       setStatus("success");
     } catch (err) {
-      console.error("EmailJS error:", err);
+      console.error("Firestore error:", err);
       setStatus("error");
     }
   };
