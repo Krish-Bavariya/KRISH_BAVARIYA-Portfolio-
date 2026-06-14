@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Send, Loader2 } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 export default function ContactModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,32 +67,30 @@ export default function ContactModal() {
     setStatus("sending");
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      // EmailJS – reads keys from Next.js public env vars
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_name: "Krish",
         },
-        body: JSON.stringify(formData),
-      });
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-
-      const data = await response.json();
-
-      // Save submission to localStorage for persistence verification
+      // Save submission to localStorage for local reference
       const existing = JSON.parse(localStorage.getItem("portfolio_contacts") || "[]");
       existing.push({
         ...formData,
         date: new Date().toISOString(),
-        savedFilename: data.filename || "",
       });
       localStorage.setItem("portfolio_contacts", JSON.stringify(existing));
 
       setStatus("success");
     } catch (err) {
-      console.error(err);
+      console.error("EmailJS error:", err);
       setStatus("error");
     }
   };
@@ -246,7 +245,7 @@ export default function ContactModal() {
                   </div>
 
                   {/* Action Row */}
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-3">
                     <motion.button
                       type="submit"
                       disabled={status === "sending"}
@@ -266,6 +265,11 @@ export default function ContactModal() {
                         </>
                       )}
                     </motion.button>
+                    {status === "error" && (
+                      <p className="text-center text-xs text-red-400 font-mono">
+                        ⚠ Failed to send. Please try again or email me directly.
+                      </p>
+                    )}
                   </div>
                 </motion.form>
               )}
