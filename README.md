@@ -6,6 +6,7 @@
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.x-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-emerald?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![Framer Motion](https://img.shields.io/badge/Framer--Motion-Animation-purple?style=for-the-badge&logo=framer)](https://www.framer.com/motion/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00AD9F?style=for-the-badge&logo=netlify)](https://krishbavariya.netlify.app/)
 
 Welcome to the source repository of **Krish Bavariya's Portfolio Website**. This project is a premium, highly interactive portfolio designed for an AI/ML developer. It bridges custom cinematic scroll animations, orbital interactive skill maps, and spotlight cards with a modern dark-mode aesthetic.
 
@@ -173,4 +174,4 @@ This optimizes code bundles, pre-renders routes, and generates a static output o
 
 - **GitHub**: [github.com/Krish-Bavariya](https://github.com/Krish-Bavariya)
 - **LinkedIn**: [linkedin.com/in/krishbavariya](https://linkedin.com/in/krishbavariya)
-- **Portfolio**: [Live Link](https://github.com/Krish-Bavariya/KRISH_BAVARIYA-Portfolio-)
+- **Portfolio**: [Live Link](https://krishbavariya.netlify.app/)
