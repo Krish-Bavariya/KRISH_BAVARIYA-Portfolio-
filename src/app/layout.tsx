@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Antigravity — Creative Developer Portfolio",
-  description: "A premium scroll-linked storytelling portfolio showcasing cinematic animations, WebGL interfaces, and glassmorphic designs.",
+  title: "KRISH's Portfolio",
+  description: "A premium scroll-linked storytelling portfolio showcasing AI/ML systems, deep learning architectures, and interactive interfaces.",
 };
 
 export default function RootLayout({
