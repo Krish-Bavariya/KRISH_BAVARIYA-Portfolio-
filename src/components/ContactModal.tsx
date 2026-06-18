@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle2, Send, Loader2 } from "lucide-react";
+import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons";
 
 
 export default function ContactModal() {
@@ -257,6 +258,45 @@ export default function ContactModal() {
                         ⚠ Failed to send. Please try again or email me directly.
                       </p>
                     )}
+                  </div>
+
+                  {/* Direct Social Links */}
+                  <div className="pt-6 border-t border-white/5 flex flex-col items-center">
+                    <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/30 mb-3">
+                      Or Connect Directly
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3">
+                      <a
+                        href="https://github.com/Krish-Bavariya"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 text-white/50 hover:text-white transition-all text-[10px] font-mono uppercase tracking-wider"
+                      >
+                        <GithubIcon size={12} />
+                        GitHub
+                      </a>
+                      <a
+                        href="https://www.linkedin.com/in/bavariyakrishp/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LinkedIn"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 text-white/50 hover:text-white transition-all text-[10px] font-mono uppercase tracking-wider"
+                      >
+                        <LinkedinIcon size={12} />
+                        LinkedIn
+                      </a>
+                      <a
+                        href="https://x.com/krishbavariya"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="X (Twitter)"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-white/20 text-white/50 hover:text-white transition-all text-[10px] font-mono uppercase tracking-wider"
+                      >
+                        <TwitterIcon size={12} />
+                        X
+                      </a>
+                    </div>
                   </div>
                 </motion.form>
               )}

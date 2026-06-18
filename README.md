@@ -173,5 +173,5 @@ This optimizes code bundles, pre-renders routes, and generates a static output o
 ## 🤝 Let's Connect
 
 - **GitHub**: [github.com/Krish-Bavariya](https://github.com/Krish-Bavariya)
-- **LinkedIn**: [linkedin.com/in/krishbavariya](https://linkedin.com/in/krishbavariya)
+- **LinkedIn**: [linkedin.com/in/bavariyakrishp](https://www.linkedin.com/in/bavariyakrishp/)
 - **Portfolio**: [Live Link](https://krishbavariya.vercel.app/)

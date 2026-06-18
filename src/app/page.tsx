@@ -2,6 +2,7 @@ import ScrollyCanvas from "@/components/ScrollyCanvas";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
 import ContactModal from "@/components/ContactModal";
+import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons";
 
 export default function Home() {
   return (
@@ -27,6 +28,35 @@ export default function Home() {
           >
             Projects
           </a>
+          <div className="hidden md:flex items-center gap-3 mr-1">
+            <a
+              href="https://github.com/Krish-Bavariya"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub Profile"
+              className="text-white/40 hover:text-white transition-colors p-1"
+            >
+              <GithubIcon size={14} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/bavariyakrishp/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn Profile"
+              className="text-white/40 hover:text-white transition-colors p-1"
+            >
+              <LinkedinIcon size={14} />
+            </a>
+            <a
+              href="https://x.com/krishbavariya"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X Profile"
+              className="text-white/40 hover:text-white transition-colors p-1"
+            >
+              <TwitterIcon size={14} />
+            </a>
+          </div>
           <a
             href="#contact"
             className="text-[10px] uppercase font-mono tracking-widest bg-white/5 border border-white/10 hover:border-white/20 transition-all rounded-full px-4 py-1.5 backdrop-blur-md"
@@ -48,14 +78,37 @@ export default function Home() {
         <Projects />
       </main>
 
-      {/* Modern Minimal Footer */}
       <footer className="relative z-20 bg-[#121212] py-16 border-t border-white/5 text-center text-xs font-light text-white/30">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <p>© {new Date().getFullYear()} Krish Bavariya. All rights reserved.</p>
-          <div className="flex gap-6 font-mono text-[10px] uppercase tracking-wider">
-            <a href="#" className="hover:text-white/60 transition-colors">Twitter</a>
-            <a href="#" className="hover:text-white/60 transition-colors">GitHub</a>
-            <a href="#" className="hover:text-white/60 transition-colors">LinkedIn</a>
+          <div className="flex gap-4 items-center">
+            <a
+              href="https://github.com/Krish-Bavariya"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub Profile"
+              className="p-2 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition-all duration-300"
+            >
+              <GithubIcon size={16} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/bavariyakrishp/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn Profile"
+              className="p-2 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition-all duration-300"
+            >
+              <LinkedinIcon size={16} />
+            </a>
+            <a
+              href="https://x.com/krishbavariya"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="X Profile"
+              className="p-2 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white hover:border-white/20 transition-all duration-300"
+            >
+              <TwitterIcon size={16} />
+            </a>
           </div>
         </div>
       </footer>
