@@ -14,7 +14,7 @@ interface ScrollyCanvasProps {
 export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { images, progress, loaded } = useImagePreloader();
+  const { images, progress, ready, loaded } = useImagePreloader();
 
   // Scroll tracking across the 500vh container
   const { scrollYProgress } = useScroll({
@@ -32,7 +32,6 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
 
@@ -41,7 +40,7 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     // Calculate scaling ratio (Cover sizing)
     const imgWidth = img.naturalWidth || img.width;
     const imgHeight = img.naturalHeight || img.height;
-    
+
     const canvasRatio = canvasWidth / canvasHeight;
     const imgRatio = imgWidth / imgHeight;
 
@@ -51,11 +50,9 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     let offsetY = 0;
 
     if (canvasRatio > imgRatio) {
-      // Canvas is wider than image ratio
       drawHeight = canvasWidth / imgRatio;
       offsetY = (canvasHeight - drawHeight) / 2;
     } else {
-      // Canvas is taller than image ratio
       drawWidth = canvasHeight * imgRatio;
       offsetX = (canvasWidth - drawWidth) / 2;
     }
@@ -76,23 +73,22 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
 
     // Draw active frame immediately after resizing
     const activeFrame = Math.min(Math.floor(frameIndex.get()), 119);
-    if (images[activeFrame]) {
-      drawImage(images[activeFrame]);
-    }
+    const img = images[activeFrame] || images[0];
+    if (img) drawImage(img);
   };
 
   // Redraw when scroll updates the frameIndex
   useMotionValueEvent(frameIndex, "change", (latest) => {
-    if (!loaded) return;
+    if (!ready) return;
     const index = Math.min(Math.floor(latest), 119);
-    if (images[index]) {
-      drawImage(images[index]);
-    }
+    // Fall back to the nearest loaded frame if this one isn't ready yet
+    const img = images[index] ?? findNearestFrame(images, index);
+    if (img) drawImage(img);
   });
 
-  // Setup resize listeners and draw initial frame
+  // Setup resize listeners and draw initial frame once first frame is ready
   useEffect(() => {
-    if (!loaded) return;
+    if (!ready) return;
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
@@ -100,13 +96,13 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
     return () => {
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, [loaded, images]);
+  }, [ready, images]);
 
   return (
     <div ref={containerRef} className="relative h-[500vh] bg-[#121212]">
-      {/* Preloader overlay */}
+      {/* Full-screen preloader — only until frame 0 is ready (near-instant) */}
       <AnimatePresence>
-        {!loaded && (
+        {!ready && (
           <motion.div
             key="preloader"
             className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#121212]"
@@ -114,7 +110,7 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
             exit={{ opacity: 0, y: -20, transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
           >
             <div className="flex flex-col items-center">
-              <motion.div 
+              <motion.div
                 className="text-8xl md:text-9xl font-light tracking-tighter text-white font-mono select-none"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -123,13 +119,13 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
                 {String(progress).padStart(3, "0")}%
               </motion.div>
               <div className="w-64 h-[2px] bg-white/10 mt-8 relative overflow-hidden rounded">
-                <motion.div 
+                <motion.div
                   className="h-full bg-white absolute left-0 top-0"
                   style={{ width: `${progress}%` }}
                   transition={{ ease: "easeOut", duration: 0.2 }}
                 />
               </div>
-              <motion.span 
+              <motion.span
                 className="text-xs uppercase tracking-[0.25em] text-white/40 mt-4 font-sans font-medium"
                 animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
@@ -149,17 +145,32 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
           style={{ backfaceVisibility: "hidden" }}
         />
 
+        {/* Non-blocking thin progress bar — visible while background-loading remaining frames */}
+        <AnimatePresence>
+          {ready && !loaded && (
+            <motion.div
+              key="bg-progress"
+              className="fixed top-0 left-0 h-[2px] bg-white/60 z-50 origin-left"
+              style={{ width: `${progress}%` }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.6 } }}
+              transition={{ ease: "easeOut", duration: 0.3 }}
+            />
+          )}
+        </AnimatePresence>
+
         {/* Parallax overlays will inject here */}
-        {loaded && <Overlay scrollYProgress={scrollYProgress} />}
+        {ready && <Overlay scrollYProgress={scrollYProgress} />}
         {children}
 
-        {/* Floating Scroll Indicator (appears when loaded) */}
-        {loaded && (
-          <motion.div 
+        {/* Floating Scroll Indicator (appears when first frame is ready) */}
+        {ready && (
+          <motion.div
             className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
           >
             <span className="text-[10px] tracking-[0.3em] font-medium text-white/50 uppercase select-none">
               Scroll to explore
@@ -175,4 +186,16 @@ export default function ScrollyCanvas({ children }: ScrollyCanvasProps) {
       </div>
     </div>
   );
+}
+
+/** Find the nearest already-loaded frame to avoid blank canvas during background load */
+function findNearestFrame(
+  images: HTMLImageElement[],
+  index: number
+): HTMLImageElement | null {
+  for (let delta = 1; delta < images.length; delta++) {
+    if (images[index - delta]) return images[index - delta];
+    if (images[index + delta]) return images[index + delta];
+  }
+  return null;
 }
