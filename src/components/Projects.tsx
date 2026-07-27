@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { ArrowUpRight, X, ExternalLink } from "lucide-react";
+import { GithubIcon } from "@/components/SocialIcons";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Project {
   id: string;
   title: string;
   category: string;
   description: string;
+  detailDescription: string;
   link: string;
+  github: string;
   tags: string[];
 }
 
@@ -20,17 +23,23 @@ const projects: Project[] = [
     category: "Generative AI / NLP",
     description:
       "Fine-tuned a 7B-parameter LLaMA-based language model on domain-specific corpora using QLoRA & PEFT, achieving 92% task accuracy with 4-bit quantization for edge deployment.",
+    detailDescription:
+      "Built a full fine-tuning pipeline for a 7B-parameter LLaMA model using QLoRA and PEFT techniques. Achieved 4-bit quantization enabling edge deployment with minimal performance loss. The system attained 92% task accuracy on domain-specific benchmarks, significantly outperforming the base model. Includes custom data preprocessing, evaluation harnesses, and a vLLM-powered inference server.",
     link: "#",
+    github: "#",
     tags: ["PyTorch", "Transformers", "QLoRA", "PEFT", "vLLM"],
   },
   {
     id: "02",
-    title: "VisionCore CV Pipeline",
-    category: "Computer Vision / Detection",
+    title: "Adam: Paper Re-Implementation",
+    category: "Research / Optimization",
     description:
-      "End-to-end real-time object detection and segmentation pipeline using YOLOv9 and SAM2, deployed on NVIDIA Triton Inference Server with sub-20ms latency at 60 FPS.",
-    link: "#",
-    tags: ["YOLOv9", "SAM2", "ONNX", "Triton", "OpenCV"],
+      "Re-implemented Kingma & Ba's Adam optimizer (ICLR 2015) from scratch in NumPy — bias-corrected moment estimates, learning-rate decay, and all — then validated it on a 3-class spiral dataset with a live Streamlit demo.",
+    detailDescription:
+      "Took Algorithm 1 from Kingma & Ba's seminal ICLR 2015 paper and translated every mathematical symbol into working NumPy code — first-moment (momentum) and second-moment (adaptive) estimates, bias-correction terms, and an inverse-decay learning-rate schedule. Validated the optimizer on a non-convex 3-class spiral classification task using a 2-layer ReLU network, mirroring the paper's own Section 6.2 experiment. Shipped an interactive Streamlit demo where you can tune hyperparameters (β₁, β₂, ε, lr, decay) and watch the decision boundary evolve in real time.",
+    link: "https://adam-live-demo.streamlit.app/",
+    github: "https://github.com/Krish-Bavariya/Adam_Paper_Re-Implementation",
+    tags: ["NumPy", "Streamlit", "Adam", "Neural Networks", "Python"],
   },
   {
     id: "03",
@@ -38,7 +47,10 @@ const projects: Project[] = [
     category: "RAG / Vector Search",
     description:
       "Production-ready Retrieval-Augmented Generation system with hybrid dense-sparse retrieval, re-ranking via cross-encoders, and streaming LLM responses. Reduced hallucination rate by 68%.",
+    detailDescription:
+      "Engineered a production-grade RAG pipeline combining dense vector search (Qdrant) with sparse BM25 retrieval, then re-ranked candidates using ColBERT cross-encoders. Integrated streaming LLM responses via OpenAI API and LangChain, reducing end-to-end latency by 40%. A rigorous evaluation framework measuring hallucination rate achieved a 68% reduction compared to naive RAG baselines.",
     link: "#",
+    github: "#",
     tags: ["LangChain", "Qdrant", "FastAPI", "ColBERT", "OpenAI API"],
   },
   {
@@ -47,29 +59,176 @@ const projects: Project[] = [
     category: "Autonomous Agents / Orchestration",
     description:
       "Multi-agent orchestration framework enabling autonomous task decomposition, tool use, and memory management across cooperative LLM agents with self-reflection and critique loops.",
+    detailDescription:
+      "Designed a modular multi-agent system using LangGraph and AutoGen where specialized agents (planner, executor, critic) collaborate autonomously. Agents maintain short- and long-term memory via Redis, use pluggable tool interfaces, and apply self-reflection loops to correct their own outputs. The framework handles task decomposition, parallel subtask execution, and result synthesis — enabling complex workflows that no single LLM call could reliably complete.",
     link: "#",
+    github: "#",
     tags: ["LangGraph", "AutoGen", "Redis", "Python", "Docker"],
   },
 ];
 
-function ProjectCard({ project }: { project: Project }) {
+// ── Project Detail Modal ──────────────────────────────────────────────────────
+
+function ProjectModal({
+  project,
+  onClose,
+}: {
+  project: Project;
+  onClose: () => void;
+}) {
+  // Close on Escape key
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  // Prevent body scroll while open
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  const hasRealGithub = project.github && project.github !== "#";
+  const hasRealLink = project.link && project.link !== "#";
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-black/70 backdrop-blur-md"
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      />
+
+      {/* Panel */}
+      <motion.div
+        className="relative z-10 w-full max-w-2xl mx-4 mb-4 md:mb-0 rounded-3xl bg-[#181818] border border-white/10 overflow-hidden shadow-2xl"
+        initial={{ y: 60, opacity: 0, scale: 0.97 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 40, opacity: 0, scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 340, damping: 30 }}
+      >
+        {/* Top gradient bar */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+
+        <div className="p-8 md:p-10">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-mono text-white/30">{project.id}</span>
+              <span className="text-[10px] tracking-widest font-semibold uppercase bg-violet-500/10 border border-violet-500/20 px-3 py-1 rounded-full text-violet-300">
+                {project.category}
+              </span>
+            </div>
+            <button
+              onClick={onClose}
+              aria-label="Close project detail"
+              className="p-2 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Title */}
+          <h3 className="text-3xl md:text-4xl font-light tracking-tight text-white mb-6">
+            {project.title}
+          </h3>
+
+          {/* Detailed description */}
+          <p className="text-sm text-white/60 leading-relaxed font-light mb-8">
+            {project.detailDescription}
+          </p>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/50"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-white/5 mb-8" />
+
+          {/* Action links */}
+          <div className="flex flex-wrap gap-3">
+            {hasRealGithub && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 text-xs font-semibold tracking-wider uppercase text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+              >
+                <GithubIcon size={14} />
+                GitHub Repo
+              </a>
+            )}
+            {hasRealLink && (
+              <a
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-violet-500/10 border border-violet-500/25 text-xs font-semibold tracking-wider uppercase text-violet-300 hover:bg-violet-500/20 hover:border-violet-500/40 transition-all duration-300"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Live Demo
+              </a>
+            )}
+            {!hasRealGithub && !hasRealLink && (
+              <span className="text-xs text-white/30 font-mono italic">
+                Links coming soon
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Bottom gradient bar */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Project Card ──────────────────────────────────────────────────────────────
+
+function ProjectCard({
+  project,
+  onOpen,
+}: {
+  project: Project;
+  onOpen: () => void;
+}) {
   const [coords, setCoords] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    setCoords({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+    setCoords({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   return (
-    <div
+    <motion.div
+      onClick={onOpen}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group relative overflow-hidden rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-md p-8 md:p-10 transition-all duration-500 hover:border-violet-500/20 hover:bg-white/[0.04]"
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      className="group relative overflow-hidden rounded-2xl bg-white/[0.02] border border-white/5 backdrop-blur-md p-8 md:p-10 cursor-pointer transition-all duration-500 hover:border-violet-500/20 hover:bg-white/[0.04]"
     >
       {/* Spotlight Hover Glow Effect */}
       <div
@@ -94,7 +253,7 @@ function ProjectCard({ project }: { project: Project }) {
             {project.title}
           </h3>
 
-          {/* Description */}
+          {/* Short Description */}
           <p className="text-sm text-white/50 leading-relaxed font-light mb-8 max-w-sm">
             {project.description}
           </p>
@@ -113,20 +272,22 @@ function ProjectCard({ project }: { project: Project }) {
             ))}
           </div>
 
-          <a
-            href={project.link}
-            className="inline-flex items-center gap-1 text-xs tracking-wider uppercase font-semibold text-white/70 hover:text-white transition-colors duration-300 group/link"
-          >
-            View Case Study
-            <ArrowUpRight className="w-4 h-4 text-white/40 group-hover/link:text-white group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-all duration-300" />
-          </a>
+          {/* Click hint */}
+          <div className="inline-flex items-center gap-1.5 text-xs tracking-wider uppercase font-semibold text-white/40 group-hover:text-white/70 transition-colors duration-300">
+            <span>View Details</span>
+            <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
+// ── Section ───────────────────────────────────────────────────────────────────
+
 export default function Projects() {
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+
   return (
     <section id="projects" className="relative z-20 py-32 bg-[#121212] border-t border-white/5">
       <div className="max-w-7xl mx-auto px-6">
@@ -150,7 +311,11 @@ export default function Projects() {
         {/* Grid layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onOpen={() => setActiveProject(project)}
+            />
           ))}
         </div>
 
@@ -170,6 +335,16 @@ export default function Projects() {
         </div>
 
       </div>
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {activeProject && (
+          <ProjectModal
+            project={activeProject}
+            onClose={() => setActiveProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
