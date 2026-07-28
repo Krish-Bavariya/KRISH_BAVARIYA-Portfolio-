@@ -51,6 +51,40 @@ export default function Overlay({ scrollYProgress }: OverlayProps) {
             <p className="mt-6 text-sm md:text-base font-light tracking-[0.15em] text-white/50 uppercase">
               AI / ML Developer &amp; Intelligent Systems Architect
             </p>
+            <div className="mt-8 flex items-center gap-4 pointer-events-auto">
+              <a
+                href="/KRISH_BAVARIYA.pdf"
+                download="Krish_Bavariya_Resume.pdf"
+                className="group relative inline-flex items-center gap-2.5 px-6 py-2.5 rounded-full text-[11px] font-mono uppercase tracking-widest text-white bg-white/8 border border-white/15 hover:bg-white/12 hover:border-white/30 backdrop-blur-md transition-all duration-300 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="transition-transform duration-300 group-hover:translate-y-0.5"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download Resume
+                </span>
+                <span className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full" />
+              </a>
+              <a
+                href="#skills"
+                className="text-[11px] font-mono uppercase tracking-widest text-white/35 hover:text-white/70 transition-colors duration-300 pointer-events-auto"
+              >
+                Explore ↓
+              </a>
+            </div>
           </motion.div>
         )}
 

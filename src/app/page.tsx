@@ -58,6 +58,18 @@ export default function Home() {
             </a>
           </div>
           <a
+            href="/KRISH_BAVARIYA.pdf"
+            download="Krish_Bavariya_Resume.pdf"
+            className="text-[10px] uppercase font-mono tracking-widest text-white/50 hover:text-white/90 transition-colors hidden md:flex items-center gap-1.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Resume
+          </a>
+          <a
             href="#contact"
             className="text-[10px] uppercase font-mono tracking-widest bg-white/5 border border-white/10 hover:border-white/20 transition-all rounded-full px-4 py-1.5 backdrop-blur-md"
           >
@@ -81,6 +93,18 @@ export default function Home() {
       <footer className="relative z-20 bg-[#121212] py-16 border-t border-white/5 text-center text-xs font-light text-white/30">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <p>© {new Date().getFullYear()} Krish Bavariya. All rights reserved.</p>
+          <a
+            href="/KRISH_BAVARIYA.pdf"
+            download="Krish_Bavariya_Resume.pdf"
+            className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-widest text-white/30 hover:text-white/70 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Resume
+          </a>
           <div className="flex gap-4 items-center">
             <a
               href="https://github.com/Krish-Bavariya"
