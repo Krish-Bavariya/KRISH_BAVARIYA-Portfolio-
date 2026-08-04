@@ -6,7 +6,7 @@ import { GithubIcon, LinkedinIcon, TwitterIcon } from "@/components/SocialIcons"
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#121212] text-white">
+    <div className="relative min-h-screen text-white" style={{ background: "var(--background)" }}>
       {/* Premium Minimal Navbar */}
       <header className="fixed top-0 left-0 w-full z-40 px-6 py-6 md:px-12 flex justify-between items-center pointer-events-none">
         <div className="pointer-events-auto select-none">
@@ -71,7 +71,8 @@ export default function Home() {
           </a>
           <a
             href="#contact"
-            className="text-[10px] uppercase font-mono tracking-widest bg-white/5 border border-white/10 hover:border-white/20 transition-all rounded-full px-4 py-1.5 backdrop-blur-md"
+            className="text-[10px] uppercase font-mono tracking-widest transition-all rounded-full px-4 py-1.5 backdrop-blur-md"
+            style={{ background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.25)", color: "rgba(167,139,250,0.8)" }}
           >
             Connect
           </a>
@@ -90,7 +91,7 @@ export default function Home() {
         <Projects />
       </main>
 
-      <footer className="relative z-20 bg-[#121212] py-16 border-t border-white/5 text-center text-xs font-light text-white/30">
+      <footer className="relative z-20 py-16 border-t text-center text-xs font-light" style={{ background: "#08080f", borderColor: "rgba(139,92,246,0.12)", color: "rgba(255,255,255,0.25)" }}>
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
           <p>© {new Date().getFullYear()} Krish Bavariya. All rights reserved.</p>
           <a

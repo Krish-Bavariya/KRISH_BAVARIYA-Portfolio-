@@ -115,7 +115,7 @@ function ProjectModal({
 
       {/* Panel */}
       <motion.div
-        className="relative z-10 w-full max-w-2xl mx-4 mb-4 md:mb-0 rounded-3xl bg-[#181818] border border-white/10 overflow-hidden shadow-2xl"
+        className="relative z-10 w-full max-w-2xl mx-4 mb-4 md:mb-0 rounded-3xl overflow-hidden shadow-2xl" style={{ background: "#0d0d1a", border: "1px solid rgba(139,92,246,0.2)" }}
         initial={{ y: 60, opacity: 0, scale: 0.97 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.97 }}
@@ -289,7 +289,7 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="relative z-20 py-32 bg-[#121212] border-t border-white/5">
+    <section id="projects" className="relative z-20 py-32 border-t" style={{ background: "#08080f", borderColor: "rgba(139,92,246,0.12)" }}>
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Section Title */}

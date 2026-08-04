@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#121212] text-white">
+      <body className="min-h-full flex flex-col text-white" style={{ background: "var(--background)" }}>
         <SmoothScroll>
           <CustomCursor />
           {children}
